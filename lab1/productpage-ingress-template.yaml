@@ -1,0 +1,61 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: nexus3-persistent-template
+metadata:
+  name: nexus3-persistent
+  annotations:
+    description: Sonatype Nexus 3 persistent template
+    tags: ci,nexus
+objects:
+- apiVersion: networking.istio.io/v1alpha3
+  kind: Gateway
+  metadata:
+    name: productpage
+    namespace: istio-system
+  spec:
+    selector:
+      istio: ingressgateway # use istio default controller
+    servers:
+    - port:
+        number: 80
+        name: http2
+        protocol: HTTP2
+      hosts:
+        - ${HOST}
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: productpage
+    namespace: ${APPS_NS}
+  spec:
+    gateways:
+    - productpage
+    hosts:
+    -  ${HOST}
+    http:
+    - route:
+      - destination:
+          host: productpage
+          port:
+            number: 9080
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: productpage
+    namespace: ${APPS_NS}
+  spec:
+    host: productpage
+    subsets:
+      - labels:
+          version: v1
+        name: v1
+parameters:
+- description: Bookinfo host
+  displayName: Bookinfo host
+  name: HOST
+  required: true
+- description: Applications target namespace
+  displayName: Applications target namespace
+  name: APPS_NS
+  required: true

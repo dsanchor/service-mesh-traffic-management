@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ratings-mesh-external
+spec:
+  hosts:
+  - ratings.mesh-external.svc.cluster.local
+  ports:
+  - number: 9080
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ratings-egressgateway
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - ratings.mesh-external.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: egressgateway-for-ratings
+spec:
+  host: istio-egressgateway.istio-system.svc.cluster.local
+  subsets:
+  - name: ratings
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ratings-through-egress-gateway
+spec:
+  hosts:
+  - ratings.mesh-external.svc.cluster.local
+  gateways:
+  - ratings-egressgateway
+  - mesh
+  http:
+  - match:
+    - gateways:
+      - mesh
+      port: 9080
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+        subset: ratings
+        port:
+          number: 80
+      weight: 100
+  - match:
+    - gateways:
+      - ratings-egressgateway
+      port: 80
+    route:
+    - destination:
+        host: ratings.mesh-external.svc.cluster.local
+        port:
+          number: 9080
+      weight: 100

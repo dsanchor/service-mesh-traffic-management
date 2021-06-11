@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${USER_NS}
+---
+apiVersion: maistra.io/v1
+kind: ServiceMeshMember
+metadata:
+  name: default
+  namespace: ${USER_NS}
+spec:
+  controlPlaneRef:
+    name: basic
+    namespace: istio-system
