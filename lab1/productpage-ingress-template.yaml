@@ -1,18 +1,15 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: nexus3-persistent-template
+  template: productpage-ingress
 metadata:
-  name: nexus3-persistent
-  annotations:
-    description: Sonatype Nexus 3 persistent template
-    tags: ci,nexus
+  name: productpage-ingress
 objects:
 - apiVersion: networking.istio.io/v1alpha3
   kind: Gateway
   metadata:
     name: productpage
-    namespace: istio-system
+    namespace: ${APPS_NS}
   spec:
     selector:
       istio: ingressgateway # use istio default controller
