@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
       - name: ratings
-        image: docker.io/maistra/examples-bookinfo-ratings-v1:2.0.0
+        image: quay.io/dsanchor/ratings:1.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
