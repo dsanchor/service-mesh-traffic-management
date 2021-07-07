@@ -12,3 +12,8 @@ spec:
   controlPlaneRef:
     name: basic
     namespace: istio-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${USER_NS}-terminal
