@@ -13,4 +13,4 @@ data:
     SERVICE_MESH_NS=istio-system
     APPS_DOMAIN=apps.labs.sandbox1500.opentlc.com
     KIALI_CONSOLE=https://kiali-istio-system.apps.labs.sandbox1500.opentlc.com/
-    LABS_HOME=/home/user/service-mesh-intro
+    LABS_HOME=/home/user/service-mesh-traffic-management

@@ -28,3 +28,4 @@ cat ./ocp/rb/mesh-user-rb.yaml | USER=$USER USER_NS=$USER_NS  envsubst | oc appl
 
 echo "Adding admin role to its ns"
 cat ./ocp/rb/user-admin.yaml | USER=$USER USER_NS=$USER_NS envsubst | oc apply -f -
+cat ./ocp/rb/user-admin.yaml | USER=$USER USER_NS=${USER_NS}-terminal envsubst | oc apply -f -
